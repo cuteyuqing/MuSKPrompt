@@ -30,8 +30,6 @@ class Memory_bank(nn.Module):
         for i in range(self.n_class):
             self.class_center[i] = torch.mean(self.queue_anchor[self.queue_label == i], dim=0)
         
-    
-    # 可调参数cmd的阶数p
     def central_moment_discrepancy(self, X, Y, p=2):
         mean_X = torch.mean(X[:,None,:], dim=2)
         mean_Y = torch.mean(Y[:,None,:], dim=2)
@@ -58,12 +56,9 @@ class Memory_bank(nn.Module):
         assert knn*num_class <= len(a_label)
         n_anchor = len(a_label)
         instance_score_matrix = torch.zeros((n_anchor,num_class)).to(a.dtype)
-        # 计算得分矩阵，行代表索引，列代表类别，值代表得分
         for i in range(num_class):
             instance_score_matrix[:, i] = torch.tensor([a[j] if a_label[j]==i else -1. for j in range(len(a_label))])
         instance_score_matrix = self.compute_score(instance_score_matrix, t)
-        # 找到每一个label前knn个最大的index以及对应的score
-        # topk_score shape is [knn, num_class]
         top_k_score, _ = torch.topk(instance_score_matrix, knn, dim=0) #
         top_k_score = torch.nn.Softmax(dim=1)(top_k_score)
         instance_score = torch.mean(top_k_score, dim=0)
@@ -71,7 +66,7 @@ class Memory_bank(nn.Module):
     def get_instance_distance(self, a, a_label, knn, num_class):
         """
         a: 
-        a_label: 待计算实例的label[n_anchor],
+        a_label: 
         knn: 
         num_class: 
         return: instance_distance[num_class]\n

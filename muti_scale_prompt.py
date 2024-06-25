@@ -161,7 +161,7 @@ def main():
     if args.n_prompt_icl <= 0:
         raise Exception("Num. of demonstration must be set smaller than num. of training.")
 
-    args.knn = min(args.knn, args.n_prompt_icl)  # knn can not exceed num. of anchors
+    args.knn = min(args.knn, args.n_prompt_icl)  
     print(args)
     logging.basicConfig(
         format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
